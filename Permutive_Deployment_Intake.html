@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Technical Deployment Questionnaire — Permutive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;0,9..40,800;0,9..40,900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --coral:#fa8784; --coral-deep:#993c1d; --coral-mid:#d85a30;
+    --peach-lt:#f5d1c4; --peach-warm:#f1c3ab; --pink:#ffcee3;
+    --ink:#1a1a1a; --paper:#fdf7f4; --line:#ece2db; --muted:#6f6a66; --white:#fff;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'DM Sans',system-ui,sans-serif;color:var(--ink);background:var(--paper);line-height:1.55;font-size:16px}
+  .wrap{max-width:1060px;margin:0 auto;padding:0 20px 64px}
+
+  /* Hero */
+  .hero{background:linear-gradient(135deg,#fa8784 0%,#f5d1c4 48%,#f1c3ab 100%);position:relative;overflow:hidden;border-radius:0 0 28px 28px;padding:34px 40px 30px;color:var(--ink)}
+  .hero::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 12% 70%,rgba(250,135,132,.5) 0%,transparent 50%),radial-gradient(circle at 82% 18%,rgba(255,206,227,.5) 0%,transparent 48%),radial-gradient(circle at 65% 90%,rgba(241,195,171,.5) 0%,transparent 45%)}
+  .hero-inner{position:relative;z-index:1}
+  .brand{display:flex;align-items:center;gap:11px;margin-bottom:22px}
+  .brand img{width:30px;height:30px}
+  .brand span{font-weight:700;font-size:19px;letter-spacing:-.01em}
+  .hero h1{font-weight:900;font-size:clamp(1.7rem,3.6vw,2.5rem);letter-spacing:-.02em;line-height:1.05;max-width:20ch}
+  .hero p{font-weight:500;font-size:15px;margin-top:10px;max-width:60ch;color:#5a3a2e}
+
+  /* Progress */
+  .pbar-row{display:flex;align-items:center;gap:14px;margin-top:24px}
+  .pbar{flex:1;height:8px;background:rgba(255,255,255,.55);border-radius:100px;overflow:hidden}
+  .pbar-fill{height:100%;background:var(--ink);border-radius:100px;width:0;transition:width .35s ease}
+  .pct{font-weight:800;font-size:15px;min-width:44px;text-align:right}
+
+  /* Layout */
+  .grid{display:grid;grid-template-columns:230px 1fr;gap:26px;margin-top:30px;align-items:start}
+  @media(max-width:820px){.grid{grid-template-columns:1fr}.nav{position:static !important}}
+
+  /* Step nav */
+  .nav{position:sticky;top:20px;display:flex;flex-direction:column;gap:4px}
+  .navstep{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:12px;cursor:pointer;color:var(--muted);font-size:14px;font-weight:500;border:1px solid transparent;transition:all .12s;text-align:left;background:none;font-family:inherit}
+  .navstep:hover{background:rgba(255,255,255,.6)}
+  .navstep.active{background:var(--white);color:var(--ink);border-color:var(--line);box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .navstep .n{width:26px;height:26px;flex:none;border-radius:50%;background:var(--white);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--muted)}
+  .navstep.active .n{background:var(--coral);border-color:var(--coral);color:#fff}
+  .navstep.done .n{background:var(--coral-deep);border-color:var(--coral-deep);color:#fff}
+
+  /* Snapshot */
+  .snap{margin-top:20px;background:var(--white);border:1px solid var(--line);border-radius:16px;padding:16px}
+  .snap h4{font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+  .snap .empty{font-size:13px;color:var(--muted)}
+  .chip{display:inline-flex;align-items:center;gap:6px;background:var(--paper);border:1px solid var(--line);border-radius:100px;padding:5px 12px;font-size:12.5px;font-weight:500;margin:0 5px 7px 0}
+  .chip.on{background:#faece7;border-color:var(--peach-warm);color:var(--coral-deep)}
+
+  /* Cards / panels */
+  .panel{background:var(--white);border:1px solid var(--line);border-radius:20px;padding:30px 32px;box-shadow:0 1px 3px rgba(0,0,0,.03)}
+  .panel-head{display:flex;align-items:center;gap:12px;margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+  .panel-head .ic{width:40px;height:40px;flex:none;border-radius:12px;background:#faece7;display:flex;align-items:center;justify-content:center}
+  .panel-head .ic svg{width:21px;height:21px;stroke:var(--coral-deep)}
+  .panel-head h2{font-size:20px;font-weight:800;letter-spacing:-.01em}
+  .panel-head .sub{font-size:13px;color:var(--muted);font-weight:500}
+
+  .q{margin-bottom:22px}
+  .q:last-child{margin-bottom:0}
+  .q>label{display:block;font-weight:700;font-size:14.5px;margin-bottom:4px}
+  .q .hint{font-size:12.5px;color:var(--muted);margin-bottom:9px}
+  input[type=text],input[type=email],input[type=date],select,textarea{width:100%;font-family:inherit;font-size:14.5px;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:11px 13px;transition:border-color .12s,box-shadow .12s}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--coral);box-shadow:0 0 0 3px rgba(250,135,132,.25);background:#fff}
+  textarea{min-height:74px;resize:vertical}
+  .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:560px){.row3,.row2{grid-template-columns:1fr}}
+
+  /* Pills */
+  .pills{display:flex;flex-wrap:wrap;gap:9px}
+  .pill{border:1px solid var(--line);background:var(--white);border-radius:100px;padding:9px 16px;font-size:13.5px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .12s;color:var(--ink)}
+  .pill:hover{border-color:var(--coral)}
+  .pill.on{background:#faece7;border-color:var(--coral-mid);color:var(--coral-deep);font-weight:700}
+
+  /* Repeatable rows */
+  .rowlist{display:flex;flex-direction:column;gap:10px}
+  .repeat{display:grid;gap:9px;align-items:center;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:11px}
+  .repeat .del{border:none;background:none;cursor:pointer;color:var(--muted);padding:4px;border-radius:8px;display:flex;align-items:center;justify-content:center}
+  .repeat .del:hover{background:#faece7;color:var(--coral-deep)}
+  .addbtn{align-self:flex-start;margin-top:4px;background:none;border:1px dashed var(--peach-warm);color:var(--coral-deep);font-weight:700;font-size:13.5px;border-radius:11px;padding:9px 16px;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:7px}
+  .addbtn:hover{background:#faece7}
+  .miniorder{display:flex;flex-direction:column;gap:8px}
+  .ordrow{display:flex;align-items:center;gap:10px;background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:9px 12px;font-weight:500;font-size:14px}
+  .ordrow .rank{width:24px;height:24px;border-radius:50%;background:var(--coral);color:#fff;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;flex:none}
+  .ordrow .mv{margin-left:auto;display:flex;gap:4px}
+  .ordrow .mv button{border:1px solid var(--line);background:#fff;border-radius:8px;width:28px;height:26px;cursor:pointer;color:var(--muted)}
+  .ordrow .mv button:hover{border-color:var(--coral);color:var(--coral-deep)}
+
+  /* Footer nav */
+  .foot{display:flex;justify-content:space-between;align-items:center;margin-top:22px}
+  .btn{font-family:inherit;font-weight:700;font-size:14.5px;border-radius:12px;padding:12px 22px;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--ink);display:inline-flex;align-items:center;gap:8px;transition:all .12s}
+  .btn:hover{border-color:var(--coral)}
+  .btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .btn.primary:hover{background:#000}
+  .btn.ghost{border-color:transparent;color:var(--muted)}
+  .btn svg{width:17px;height:17px}
+  .hidden{display:none !important}
+
+  /* Review */
+  .rev-sec{margin-bottom:20px}
+  .rev-sec h3{font-size:14px;font-weight:800;color:var(--coral-deep);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+  .rev-tbl{width:100%;border-collapse:collapse;font-size:14px}
+  .rev-tbl td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+  .rev-tbl td:first-child{color:var(--muted);width:42%;font-weight:500}
+  .exp-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+  .banner{background:#faece7;border:1px solid var(--peach-warm);border-radius:14px;padding:14px 16px;font-size:13.5px;color:var(--coral-deep);margin-bottom:20px;font-weight:500}
+  @media print{.nav,.foot,.hero .pbar-row,.exp-row{display:none}.grid{grid-template-columns:1fr}.panel{border:none;box-shadow:none}}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="hero-inner">
+    <div class="brand"><img src="data:image/png;base64,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" alt="Permutive"><span>Permutive</span></div>
+    <h1>Technical deployment questionnaire</h1>
+    <p>A few questions to help us understand your ad tech stack and plan exactly where Permutive will be deployed. It takes about 10 minutes, and your answers save into the page link as you go — so you can share it with colleagues or pick it up later. <a href="index.html" style="color:var(--coral-deep);font-weight:700;text-decoration:underline">Why we ask →</a></p>
+    <div class="pbar-row"><div class="pbar"><div class="pbar-fill" id="pfill"></div></div><span class="pct" id="pct">0%</span></div>
+  </div>
+</div>
+
+<div class="wrap">
+<div class="grid">
+  <div>
+    <nav class="nav" id="nav"></nav>
+    <div class="snap">
+      <h4>Deployment snapshot</h4>
+      <div id="snapbody"><div class="empty">Your answers will appear here as a shareable overview.</div></div>
+    </div>
+  </div>
+
+  <div>
+    <!-- STEP 1: TEAM -->
+    <section class="panel" data-step="0">
+      <div class="panel-head"><div class="ic"><svg fill="none" stroke-width="2" viewBox="0 0 24 24"><path d="M9 7a3 3 0 1 0 0 6 3 3 0 0 0 0-6ZM3 20a6 6 0 0 1 12 0M17 7a3 3 0 0 1 0 6M15 20a6 6 0 0 1 6-6" stroke-linecap="round"/></svg></div>
+        <div><h2>Your team</h2><div class="sub">Who we'll be working with on the deployment</div></div></div>
+      <div class="q"><label>Main technical point of contact</label>
+        <div class="row3"><input type="text" data-f="contact_name" placeholder="Full name"><input type="text" data-f="contact_title" placeholder="Job title"><input type="email" data-f="contact_email" placeholder="name@company.com"></div></div>
+      <div class="q"><label>Who else will be closely involved?</label>
+        <div class="hint">Name, title and email for each person helping with the rollout.</div>
+        <textarea data-f="others" placeholder="e.g. Jane Doe, Head of Ad Ops, jane@company.com"></textarea></div>
+    </section>
+
+    <!-- STEP 2: TIMELINE -->
+    <section class="panel hidden" data-step="1">
+      <div class="panel-head"><div class="ic"><svg fill="none" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4" stroke-linecap="round"/></svg></div>
+        <div><h2>Timeline &amp; rollout</h2><div class="sub">When and how you release software</div></div></div>
+      <div class="q"><label>What deadline are you working towards?</label>
+        <div class="hint">Leave blank if none. Note below if it differs by platform.</div>
+        <div class="row2"><input type="date" data-f="deadline"><input type="text" data-f="deadline_note" placeholder="Same across all platforms? Any detail…"></div></div>
+      <div class="q"><label>Which platforms are in scope?</label>
+        <div class="hint">Select all that apply — then drag the priority order below.</div>
+        <div class="pills" data-group="platforms" data-multi="1"><button class="pill" data-v="Web">Web</button><button class="pill" data-v="AMP">AMP</button><button class="pill" data-v="iOS">iOS</button><button class="pill" data-v="Android">Android</button><button class="pill" data-v="CTV">CTV</button></div></div>
+      <div class="q" id="orderq"><label>Deployment priority order</label>
+        <div class="hint">Use the arrows to rank which platforms go first.</div>
+        <div class="miniorder" id="orderlist"></div></div>
+      <div class="q"><label>In-house or external technical teams?</label>
+        <textarea data-f="teams" placeholder="e.g. Web team in-house, mobile team external"></textarea></div>
+      <div class="q"><label>What do your release cycles look like?</label>
+        <div class="pills" data-group="release" data-multi="0"><button class="pill" data-v="Continuous">Continuous</button><button class="pill" data-v="Weekly">Weekly</button><button class="pill" data-v="Bi-weekly sprints">Bi-weekly sprints</button><button class="pill" data-v="Monthly">Monthly</button><button class="pill" data-v="Other">Other</button></div></div>
+      <div class="q"><label>Do you use staging / test / dev environments?</label>
+        <div class="pills" data-group="staging" data-multi="0"><button class="pill" data-v="Yes">Yes</button><button class="pill" data-v="No">No</button></div>
+        <textarea style="margin-top:10px" data-f="staging_note" placeholder="Briefly, how does a change move from dev to production?"></textarea></div>
+    </section>
+
+    <!-- STEP 3: AD STACK -->
+    <section class="panel hidden" data-step="2">
+      <div class="panel-head"><div class="ic"><svg fill="none" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="6" rx="1"/><rect x="3" y="10" width="18" height="4" rx="1"/><rect x="3" y="15" width="18" height="6" rx="1"/></svg></div>
+        <div><h2>Ad serving &amp; monetisation</h2><div class="sub">Your ad server and demand connections</div></div></div>
+      <div class="q"><label>Which ad server(s) do you use?</label>
+        <div class="pills" data-group="adservers" data-multi="1"><button class="pill" data-v="Google Ad Manager">Google Ad Manager</button><button class="pill" data-v="Xandr">Xandr</button><button class="pill" data-v="Equativ">Equativ</button><button class="pill" data-v="Other">Other</button></div>
+        <textarea style="margin-top:10px" data-f="adserver_note" placeholder="If multiple, tell us why…"></textarea></div>
+      <div class="q hidden" id="gdtq"><label>Do you have access to Google Data Transfer?</label>
+        <div class="hint">Shown because you selected Google Ad Manager.</div>
+        <select data-f="gdt"><option value="">Select…</option><option>Yes</option><option>No</option><option>Not sure</option></select></div>
+      <div class="q"><label>How do you connect to SSPs / DSPs?</label>
+        <div class="pills" data-group="connect" data-multi="1"><button class="pill" data-v="Prebid">Prebid</button><button class="pill" data-v="AdX">AdX</button><button class="pill" data-v="Direct">Direct</button></div>
+        <input type="text" style="margin-top:10px" class="hidden" id="prebidver" data-f="prebid_version" placeholder="Prebid version, if known (e.g. 8.42)"></div>
+      <div class="q"><label>Which SSPs or DSPs do you work with?</label>
+        <textarea data-f="ssps" placeholder="e.g. Xandr, Magnite (Rubicon), PubMatic, Index Exchange"></textarea></div>
+    </section>
+
+    <!-- STEP 4: IDENTITY -->
+    <section class="panel hidden" data-step="3">
+      <div class="panel-head"><div class="ic"><svg fill="none" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6l-8-4Z"/><path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div><h2>Identity &amp; data</h2><div class="sub">Identifiers for the Permutive Identity Framework</div></div></div>
+      <div class="banner">The Identity Framework lets us recognise users across browsers, devices and domains — powering second-party data import, cross-domain tracking and audience matching with advertisers.</div>
+      <div class="q"><label>Which identifiers would you like to pass?</label>
+        <div class="hint">Add each identifier you can share (e.g. hashed email, logged-in user ID, subscriber ID).</div>
+        <div class="rowlist" id="idlist"></div>
+        <button class="addbtn" data-add="id"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>Add identifier</button></div>
+      <div class="q"><label>If you route data, which warehouse to?</label>
+        <select data-f="warehouse"><option value="">Select…</option><option>BigQuery</option><option>Amazon S3</option><option>Snowflake</option><option>Not routing</option><option>Other</option></select></div>
+    </section>
+
+    <!-- STEP 5: PLATFORMS -->
+    <section class="panel hidden" data-step="4">
+      <div class="panel-head"><div class="ic"><svg fill="none" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4" stroke-linecap="round"/></svg></div>
+        <div><h2>Domains, apps &amp; CTV</h2><div class="sub">Everywhere Permutive will be deployed</div></div></div>
+      <div class="q"><label>Websites</label>
+        <div class="hint">List each domain and tick the surfaces it runs. FIA = Facebook Instant Articles.</div>
+        <div class="rowlist" id="domlist"></div>
+        <button class="addbtn" data-add="dom"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>Add domain</button></div>
+      <div class="q"><label>Mobile apps</label>
+        <div class="hint">Your iOS and Android apps, with minimum OS supported.</div>
+        <div class="rowlist" id="applist"></div>
+        <button class="addbtn" data-add="app"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>Add app</button></div>
+      <div class="q"><label>Connected TV</label>
+        <div class="hint">Only if applicable. Platforms: Roku, Fire TV, Apple TV, Android TV, Samsung, LG.</div>
+        <div class="rowlist" id="ctvlist"></div>
+        <button class="addbtn" data-add="ctv"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>Add CTV channel</button></div>
+    </section>
+
+    <!-- REVIEW -->
+    <section class="panel hidden" data-step="5">
+      <div class="panel-head"><div class="ic"><svg fill="none" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div><h2>Review &amp; send</h2><div class="sub">Check your answers, then copy your link or send it</div></div></div>
+      <div class="q"><label>Anything else we should know?</label>
+        <div class="hint">Any detail we haven't asked about — other tools, constraints, dependencies or questions.</div>
+        <textarea data-f="notes" placeholder="Optional — add any extra context here"></textarea></div>
+      <div class="banner">Nothing is sent automatically. Your answers live inside the link, so copying it captures everything below — share it with your team or send it to your Permutive contact.</div>
+      <div id="review"></div>
+      <div class="exp-row">
+        <button class="btn primary" id="copy"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1" stroke-linecap="round" stroke-linejoin="round"/></svg>Copy shareable link</button>
+        <button class="btn" id="email"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Email link to Permutive</button>
+        <button class="btn" id="print"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H4v-6h16v6h-2M8 14h8v7H8z"/></svg>Print / PDF</button>
+      </div>
+    </section>
+
+    <div class="foot">
+      <button class="btn ghost" id="back"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/></svg>Back</button>
+      <button class="btn primary" id="next">Continue<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+  </div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
+<script>
+/* =========================================================================
+   Permutive — Technical Deployment Questionnaire
+   -------------------------------------------------------------------------
+   A single-file, static intake form with no backend. Every answer lives in
+   the `state` object, which is also encoded into the page URL (see the
+   "URL state" section) so progress can be saved, resumed and shared just by
+   copying the link. Flow: config → wire up inputs → navigation → snapshot →
+   URL state → review/export → init.
+   ========================================================================= */
+
+/* ---- Config -------------------------------------------------------------
+   PERMUTIVE_CONTACT — where the review step's "Email link" button sends to.
+                       Change this per client so it reaches the right person.
+   STEPS            — the ordered wizard steps (labels shown in the side nav). */
+const PERMUTIVE_CONTACT = "mike.harrison-beaumont@permutive.com";
+const STEPS = [
+  {t:"Your team"}, {t:"Timeline & rollout"}, {t:"Ad stack"},
+  {t:"Identity & data"}, {t:"Domains & apps"}, {t:"Review & send"}
+];
+
+/* Single source of truth for every answer. This is what gets serialised
+   into the URL, and what hydrate() reads back when resuming from a link.
+     fields          — plain text/select inputs, keyed by their data-f name
+     groups          — pill selections, keyed by their data-group name
+     ids/doms/apps/ctv — the repeatable table rows on later steps
+     order           — ranked deployment priority (a subset of platforms)     */
+const state = {
+  fields:{},
+  groups:{platforms:[], release:[], staging:[], adservers:[], connect:[]},
+  ids:[], doms:[], apps:[], ctv:[], order:[]
+};
+let cur = 0; // index of the step currently on screen
+
+/* ---- Side navigation ----------------------------------------------------
+   One clickable button per step; clicking jumps straight to that step.       */
+const nav = document.getElementById('nav');
+STEPS.forEach((s,i)=>{
+  const b = document.createElement('button');
+  b.className = 'navstep';
+  b.dataset.i = i;
+  b.innerHTML = '<span class="n">'+(i+1)+'</span>'+s.t;
+  b.onclick = ()=>go(i);
+  nav.appendChild(b);
+});
+
+/* ---- Plain inputs -------------------------------------------------------
+   Any element with a data-f attribute writes straight into state.fields.     */
+document.querySelectorAll('[data-f]').forEach(el=>{
+  el.addEventListener('input', ()=>{
+    state.fields[el.dataset.f] = el.value;
+    sync();
+  });
+});
+
+/* ---- Pill selectors -----------------------------------------------------
+   Groups are declared in the HTML via data-group (name) and data-multi
+   ("1" = multi-select, "0" = single-select). We mirror the live selection
+   into state.groups[name] and show/hide the questions that depend on it.     */
+document.querySelectorAll('[data-group]').forEach(g=>{
+  const key = g.dataset.group;
+  const multi = g.dataset.multi === '1';
+  g.querySelectorAll('.pill').forEach(p=>{
+    p.addEventListener('click', ()=>{
+      if(multi){
+        p.classList.toggle('on');
+        state.groups[key] = [...g.querySelectorAll('.pill.on')].map(x=>x.dataset.v);
+      }else{
+        g.querySelectorAll('.pill').forEach(x=>x.classList.remove('on'));
+        p.classList.add('on');
+        state.groups[key] = [p.dataset.v];
+      }
+      // Conditional follow-up questions, revealed only when relevant:
+      if(key === 'platforms') buildOrder(); // refresh the priority ranker
+      if(key === 'adservers') // Google Data Transfer only applies to GAM
+        document.getElementById('gdtq').classList.toggle('hidden', !state.groups.adservers.includes('Google Ad Manager'));
+      if(key === 'connect') // Prebid version only if they use Prebid
+        document.getElementById('prebidver').classList.toggle('hidden', !state.groups.connect.includes('Prebid'));
+      sync();
+    });
+  });
+});
+
+/* ---- Deployment priority ranker ----------------------------------------
+   The platforms chosen above appear here as a ranked list the user reorders
+   with up/down arrows. buildOrder keeps the list in step with the current
+   platform selection; renderOrder (re)draws it.                              */
+function buildOrder(){
+  const selected = state.groups.platforms;
+  // Drop platforms no longer selected, then append any newly selected ones.
+  state.order = state.order.filter(o=>selected.includes(o));
+  selected.forEach(s=>{ if(!state.order.includes(s)) state.order.push(s); });
+  renderOrder();
+}
+function renderOrder(){
+  const list = document.getElementById('orderlist');
+  document.getElementById('orderq').classList.toggle('hidden', state.order.length===0);
+  list.innerHTML = '';
+  state.order.forEach((platform,i)=>{
+    const row = document.createElement('div');
+    row.className = 'ordrow';
+    row.innerHTML = '<span class="rank">'+(i+1)+'</span>'+platform+
+      '<span class="mv"><button data-d="-1">↑</button><button data-d="1">↓</button></span>';
+    // Up (-1) / down (+1) buttons swap this item with its neighbour.
+    row.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+      const j = i + (+b.dataset.d);
+      if(j<0 || j>=state.order.length) return;
+      [state.order[i], state.order[j]] = [state.order[j], state.order[i]];
+      renderOrder();
+      sync();
+    });
+    list.appendChild(row);
+  });
+}
+
+/* ---- Repeatable table rows (identifiers, domains, apps, CTV) ------------
+   Each list is a set of rows built from a column template.
+     TPL      — columns per list, as "key|placeholder" pairs
+     LISTMAP  — kind -> the container element id in the HTML
+     STOREMAP — kind -> the state key the rows are stored under
+   rowEl builds one row; collect reads all rows of a list back into state.     */
+const TPL = {
+  id:  ()=>rowEl('id',  ['type|Identifier (e.g. hashed email)','example|Example value','domains|Domains it applies to']),
+  dom: ()=>rowEl('dom', ['domain|domain.com','surfaces|Web / AMP / FIA','lang|Language']),
+  app: ()=>rowEl('app', ['name|App name','os|iOS / Android','minos|Min OS version']),
+  ctv: ()=>rowEl('ctv', ['name|Channel / app','platforms|Platforms (Roku, Fire TV…)','lang|Language'])
+};
+const LISTMAP  = {id:'idlist', dom:'domlist', app:'applist', ctv:'ctvlist'};
+const STOREMAP = {id:'ids',    dom:'doms',    app:'apps',    ctv:'ctv'};
+
+// Build one row: a text input per column, plus a delete button.
+function rowEl(kind, cols){
+  const wrap = document.createElement('div');
+  wrap.className = 'repeat';
+  wrap.style.gridTemplateColumns = 'repeat('+cols.length+',1fr) 34px';
+  cols.forEach(c=>{
+    const [field, placeholder] = c.split('|');
+    const inp = document.createElement('input');
+    inp.type = 'text';
+    inp.placeholder = placeholder;
+    inp.dataset.col = field;
+    inp.addEventListener('input', ()=>collect(kind));
+    wrap.appendChild(inp);
+  });
+  const del = document.createElement('button');
+  del.className = 'del';
+  del.innerHTML = '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m2 0v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7" stroke-linecap="round"/></svg>';
+  del.onclick = ()=>{ wrap.remove(); collect(kind); };
+  wrap.appendChild(del);
+  return wrap;
+}
+
+// Read every row of a list back into state, dropping fully-empty rows.
+function collect(kind){
+  const cont = document.getElementById(LISTMAP[kind]);
+  state[STOREMAP[kind]] = [...cont.querySelectorAll('.repeat')].map(row=>{
+    const obj = {};
+    row.querySelectorAll('input').forEach(i=>obj[i.dataset.col] = i.value);
+    return obj;
+  }).filter(obj => Object.values(obj).some(v => v && v.trim()));
+  sync();
+}
+
+// "Add" buttons append a fresh empty row to their list.
+document.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>{
+  const kind = b.dataset.add;
+  document.getElementById(LISTMAP[kind]).appendChild(TPL[kind]());
+});
+
+/* ---- Step navigation ----------------------------------------------------
+   go(i) shows step i and updates the nav highlight, progress bar and the
+   Back/Continue buttons. On the final step it renders the review summary.    */
+function go(i){
+  cur = Math.max(0, Math.min(STEPS.length-1, i));
+  document.querySelectorAll('[data-step]').forEach(s=>s.classList.toggle('hidden', +s.dataset.step !== cur));
+  document.querySelectorAll('.navstep').forEach((b,bi)=>{
+    b.classList.toggle('active', bi===cur);
+    b.classList.toggle('done',   bi<cur);
+  });
+  document.getElementById('back').style.visibility = cur===0 ? 'hidden' : 'visible';
+  document.getElementById('next').classList.toggle('hidden', cur===STEPS.length-1);
+  const pct = Math.round((cur/(STEPS.length-1))*100);
+  document.getElementById('pfill').style.width = pct+'%';
+  document.getElementById('pct').textContent = pct+'%';
+  if(cur === STEPS.length-1) renderReview();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+document.getElementById('next').onclick = ()=>go(cur+1);
+document.getElementById('back').onclick = ()=>go(cur-1);
+
+/* ---- Live snapshot ------------------------------------------------------
+   The sidebar "deployment snapshot" — a running summary of the headline
+   answers. sync() is the single "something changed" hook: it redraws the
+   snapshot and refreshes the URL (updateHash), so it's called after every
+   state change throughout the form.                                          */
+function chip(text, on){ return '<span class="chip'+(on?' on':'')+'">'+text+'</span>'; }
+function sync(){
+  const s = state, out = [];
+  if(s.order.length)                 out.push(chip(s.order.join(' → '), true));
+  else if(s.groups.platforms.length) out.push(chip(s.groups.platforms.join(', '), true));
+  s.groups.adservers.forEach(a=>out.push(chip(a)));
+  if(s.groups.connect.length)        out.push(chip(s.groups.connect.join(' + ')));
+  if(s.fields.warehouse && s.fields.warehouse!=='Not routing') out.push(chip('→ '+s.fields.warehouse));
+  if(s.ids.length)                   out.push(chip(s.ids.length+' identifier'+(s.ids.length>1?'s':'')));
+  const properties = s.doms.length + s.apps.length + s.ctv.length;
+  if(properties)                     out.push(chip(properties+' property'+(properties>1?'ies':'y')));
+  const body = document.getElementById('snapbody');
+  body.innerHTML = out.length ? out.join('') : '<div class="empty">Your answers will appear here as a shareable overview.</div>';
+  updateHash();
+}
+
+/* ---- URL state (save / share / resume) ---------------------------------
+   The entire `state` object is compressed with LZString and stored in the
+   URL hash (#d=...). This is the whole persistence model — there is no
+   server. encodeState/decodeState convert to and from that string;
+   shareURL builds the full link; updateHash keeps the address bar current
+   (debounced) so a refresh or a copied link never loses progress. If
+   LZString can't load (e.g. offline), we fall back to a plain, longer
+   URI-encoded string flagged with a leading "u".                            */
+function encodeState(){
+  const json = JSON.stringify(state);
+  try{ return LZString.compressToEncodedURIComponent(json); }
+  catch(e){ return 'u' + encodeURIComponent(json); }
+}
+function decodeState(str){
+  try{
+    const json = (str[0]==='u')
+      ? decodeURIComponent(str.slice(1))
+      : LZString.decompressFromEncodedURIComponent(str);
+    return json ? JSON.parse(json) : null;
+  }catch(e){ return null; }
+}
+function shareURL(){ return location.href.split('#')[0] + '#d=' + encodeState(); }
+
+let hashTimer;
+function updateHash(){
+  // Debounced so we don't rewrite the URL on every keystroke.
+  clearTimeout(hashTimer);
+  hashTimer = setTimeout(()=>{
+    try{ history.replaceState(null, '', '#d=' + encodeState()); }catch(e){}
+  }, 400);
+}
+
+/* Rebuild the whole UI from a decoded state object — used when the page is
+   opened from a shared or saved link. Restores field values, pill
+   selections, the conditional questions, the priority ranker and every
+   repeatable row, then triggers a sync().                                    */
+function hydrate(s){
+  Object.assign(state.fields, s.fields||{});
+  ['platforms','release','staging','adservers','connect'].forEach(k=>{ state.groups[k] = (s.groups && s.groups[k]) || []; });
+  state.order = s.order || [];
+  ['ids','doms','apps','ctv'].forEach(k=>{ state[k] = Array.isArray(s[k]) ? s[k] : []; });
+
+  // Reflect saved values back into the DOM.
+  document.querySelectorAll('[data-f]').forEach(el=>{ if(state.fields[el.dataset.f]!=null) el.value = state.fields[el.dataset.f]; });
+  document.querySelectorAll('[data-group]').forEach(g=>{
+    const key = g.dataset.group;
+    g.querySelectorAll('.pill').forEach(p=>p.classList.toggle('on', (state.groups[key]||[]).includes(p.dataset.v)));
+  });
+  document.getElementById('gdtq').classList.toggle('hidden', !(state.groups.adservers||[]).includes('Google Ad Manager'));
+  document.getElementById('prebidver').classList.toggle('hidden', !(state.groups.connect||[]).includes('Prebid'));
+  renderOrder();
+
+  // Rebuild each repeatable list from its saved rows (or one empty row).
+  ['id','dom','app','ctv'].forEach(kind=>{
+    const cont = document.getElementById(LISTMAP[kind]);
+    cont.innerHTML = '';
+    const rows = state[STOREMAP[kind]];
+    if(rows.length){
+      rows.forEach(obj=>{
+        const row = TPL[kind]();
+        row.querySelectorAll('input').forEach(inp=>{ if(obj[inp.dataset.col]!=null) inp.value = obj[inp.dataset.col]; });
+        cont.appendChild(row);
+      });
+    }else{
+      cont.appendChild(TPL[kind]());
+    }
+  });
+  sync();
+}
+
+/* ---- Review + export ----------------------------------------------------
+   buildData flattens state into a labelled key -> value map used for both
+   the on-screen summary and the plain-text version. renderReview draws the
+   summary tables; plainText produces the text used in the email body.        */
+function esc(x){ return (x||'').toString().replace(/[&<>]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+function buildData(){
+  const f = state.fields;
+  return {
+    "Main contact":         [f.contact_name,f.contact_title,f.contact_email].filter(Boolean).join(', '),
+    "Others involved":      f.others,
+    "Deadline":             [f.deadline,f.deadline_note].filter(Boolean).join(' — '),
+    "Platforms in scope":   state.groups.platforms.join(', '),
+    "Priority order":       state.order.join(' → '),
+    "Technical teams":      f.teams,
+    "Release cycle":        state.groups.release.join(', '),
+    "Staging / dev":        [state.groups.staging.join(', '),f.staging_note].filter(Boolean).join(' — '),
+    "Ad server(s)":         [state.groups.adservers.join(', '),f.adserver_note].filter(Boolean).join(' — '),
+    "Google Data Transfer": f.gdt,
+    "SSP/DSP connection":   [state.groups.connect.join(', '),f.prebid_version?('Prebid '+f.prebid_version):''].filter(Boolean).join(', '),
+    "SSPs / DSPs":          f.ssps,
+    "Data warehouse":       f.warehouse,
+    "Additional notes":     f.notes
+  };
+}
+function renderReview(){
+  const d = buildData();
+  // Scalar answers as a two-column table.
+  let h = '<div class="rev-sec"><table class="rev-tbl">';
+  for(const k in d){ if(d[k] && d[k].trim()) h += '<tr><td>'+esc(k)+'</td><td>'+esc(d[k])+'</td></tr>'; }
+  h += '</table></div>';
+  // Each repeatable list as its own sub-section.
+  const tbl = (title, arr, cols)=>{
+    if(!arr.length) return '';
+    let t = '<div class="rev-sec"><h3>'+title+'</h3><table class="rev-tbl">';
+    arr.forEach(r=>{ t += '<tr><td colspan="2">'+cols.map(c=>esc(r[c]||'—')).join(' · ')+'</td></tr>'; });
+    return t + '</table></div>';
+  };
+  h += tbl('Identifiers', state.ids,  ['type','example','domains']);
+  h += tbl('Domains',     state.doms, ['domain','surfaces','lang']);
+  h += tbl('Apps',        state.apps, ['name','os','minos']);
+  h += tbl('CTV',         state.ctv,  ['name','platforms','lang']);
+  document.getElementById('review').innerHTML = h;
+}
+function plainText(){
+  const d = buildData();
+  let t = 'PERMUTIVE — TECHNICAL DEPLOYMENT QUESTIONNAIRE\n\n';
+  for(const k in d){ if(d[k] && d[k].trim()) t += k+': '+d[k]+'\n'; }
+  const sec = (title, arr, cols)=>{
+    if(!arr.length) return;
+    t += '\n'+title.toUpperCase()+'\n';
+    arr.forEach(r=>t += ' - '+cols.map(c=>r[c]||'—').join(' | ')+'\n');
+  };
+  sec('Identifiers', state.ids,  ['type','example','domains']);
+  sec('Domains',     state.doms, ['domain','surfaces','lang']);
+  sec('Apps',        state.apps, ['name','os','minos']);
+  sec('CTV',         state.ctv,  ['name','platforms','lang']);
+  return t;
+}
+
+/* Review-step buttons.
+     Copy  — puts the shareable link (all answers encoded) on the clipboard
+     Print — the browser's print / save-as-PDF dialog
+     Email — opens the user's mail client with the link pre-filled            */
+document.getElementById('copy').onclick = async ()=>{
+  const url = shareURL();
+  const btn = document.getElementById('copy');
+  try{
+    await navigator.clipboard.writeText(url);
+    btn.lastChild.textContent = 'Link copied';
+    setTimeout(()=>btn.lastChild.textContent = 'Copy shareable link', 2500);
+  }catch(e){
+    window.prompt('Copy this link:', url); // clipboard API can be blocked on file://
+  }
+};
+document.getElementById('print').onclick = ()=>window.print();
+document.getElementById('email').onclick = ()=>{
+  const body = encodeURIComponent(
+    'Here are our answers to the Permutive technical deployment questionnaire.\n\n' +
+    'Open the completed form here (it reopens with everything filled in):\n' + shareURL());
+  location.href = 'mailto:' + PERMUTIVE_CONTACT +
+    '?subject=' + encodeURIComponent('Technical Deployment Questionnaire — '+(state.fields.contact_name||'')) +
+    '&body=' + body;
+};
+
+/* ---- Init ---------------------------------------------------------------
+   If the URL already carries saved state (#d=...), resume from it; otherwise
+   start fresh with one empty row in each repeatable list. Then show step 1.  */
+const saved = location.hash.indexOf('#d=')===0 ? decodeState(location.hash.slice(3)) : null;
+if(saved){
+  hydrate(saved);
+}else{
+  ['id','dom','app','ctv'].forEach(k=>document.getElementById(LISTMAP[k]).appendChild(TPL[k]()));
+}
+go(0);
+</script>
+</body>
+</html>

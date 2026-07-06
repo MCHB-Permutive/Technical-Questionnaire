@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deployment questionnaire — overview — Permutive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;0,9..40,800;0,9..40,900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --coral:#fa8784; --coral-deep:#993c1d; --coral-mid:#d85a30;
+    --peach-warm:#f1c3ab; --ink:#1a1a1a; --paper:#fdf7f4; --line:#ece2db; --muted:#6f6a66; --white:#fff;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'DM Sans',system-ui,sans-serif;color:var(--ink);background:var(--paper);line-height:1.6;font-size:16px}
+  .wrap{max-width:920px;margin:0 auto;padding:0 22px 72px}
+  a{color:inherit}
+
+  .hero{background:linear-gradient(135deg,#fa8784 0%,#f5d1c4 48%,#f1c3ab 100%);position:relative;overflow:hidden;border-radius:0 0 28px 28px;padding:38px 44px 46px}
+  .hero::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 12% 70%,rgba(250,135,132,.5) 0%,transparent 50%),radial-gradient(circle at 82% 18%,rgba(255,206,227,.5) 0%,transparent 48%),radial-gradient(circle at 65% 90%,rgba(241,195,171,.5) 0%,transparent 45%)}
+  .hero-inner{position:relative;z-index:1;max-width:820px;margin:0 auto}
+  .brand{display:flex;align-items:center;gap:11px;margin-bottom:26px}
+  .brand img{width:30px;height:30px}
+  .brand span{font-weight:700;font-size:19px;letter-spacing:-.01em}
+  .eyebrow{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--coral-deep);margin-bottom:12px}
+  .hero h1{font-weight:900;font-size:clamp(2rem,4.6vw,3.1rem);letter-spacing:-.02em;line-height:1.03;max-width:18ch}
+  .hero p{font-weight:500;font-size:16px;margin-top:14px;max-width:56ch;color:#5a3a2e}
+
+  .lead{background:none;padding:36px 0 6px}
+  .lead .container,.section{max-width:820px;margin:0 auto}
+  section.block{margin-top:40px}
+  h2{font-size:22px;font-weight:800;letter-spacing:-.01em;margin-bottom:6px}
+  .sub{color:var(--muted);font-size:14.5px;margin-bottom:20px}
+
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  @media(max-width:720px){.steps{grid-template-columns:1fr 1fr}}
+  .stepcard{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:18px}
+  .stepcard .num{width:30px;height:30px;border-radius:50%;background:var(--coral);color:#fff;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+  .stepcard h3{font-size:15px;font-weight:800;margin-bottom:4px}
+  .stepcard p{font-size:13px;color:var(--muted);line-height:1.5}
+
+  .why{display:flex;flex-direction:column;gap:12px}
+  .whyrow{display:grid;grid-template-columns:200px 1fr;gap:20px;background:var(--white);border:1px solid var(--line);border-radius:16px;padding:20px 22px}
+  @media(max-width:640px){.whyrow{grid-template-columns:1fr;gap:6px}}
+  .whyrow .t{display:flex;align-items:center;gap:11px}
+  .whyrow .ic{width:36px;height:36px;flex:none;border-radius:11px;background:#faece7;display:flex;align-items:center;justify-content:center}
+  .whyrow .ic svg{width:19px;height:19px;stroke:var(--coral-deep);fill:none;stroke-width:2}
+  .whyrow h3{font-size:15.5px;font-weight:800}
+  .whyrow p{font-size:14px;color:#4a4540;line-height:1.6}
+
+  .note{background:#faece7;border:1px solid var(--peach-warm);border-radius:16px;padding:18px 22px;font-size:14px;color:var(--coral-deep);margin-top:40px;line-height:1.6}
+  .note strong{font-weight:800}
+
+  .cta{margin-top:44px;text-align:center}
+  .startbtn{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:#fff;font-weight:800;font-size:16px;padding:16px 34px;border-radius:14px;text-decoration:none;transition:background .12s}
+  .startbtn:hover{background:#000}
+  .startbtn svg{width:19px;height:19px;stroke:#fff;fill:none;stroke-width:2}
+  .cta .mins{display:block;margin-top:12px;font-size:13px;color:var(--muted)}
+  footer{margin-top:56px;text-align:center;font-size:12.5px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="hero-inner">
+    <div class="brand"><img src="data:image/png;base64,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" alt="Permutive"><span>Permutive</span></div>
+    <div class="eyebrow">Before you begin</div>
+    <h1>Let's map where Permutive fits in your stack</h1>
+    <p>This short questionnaire gives our deployment team the picture we need to plan your rollout accurately — which platforms you run, how you serve ads, and how we'll recognise your audiences. Here's what to expect and why each part matters.</p>
+  </div>
+</div>
+
+<div class="wrap">
+  <section class="block">
+    <h2>How it works</h2>
+    <div class="sub">Four simple steps — no account, no software to install.</div>
+    <div class="steps">
+      <div class="stepcard"><div class="num">1</div><h3>Fill it in</h3><p>Work through five short sections. It takes about 10 minutes.</p></div>
+      <div class="stepcard"><div class="num">2</div><h3>Progress saves to the link</h3><p>Your answers are stored in the page's own link as you type — refresh or close the tab and nothing is lost.</p></div>
+      <div class="stepcard"><div class="num">3</div><h3>Share with your team</h3><p>Copy the link to hand it to a colleague to finish their part, on any device.</p></div>
+      <div class="stepcard"><div class="num">4</div><h3>Send it to us</h3><p>Copy or email the final link to your Permutive contact. That's it.</p></div>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2>What we'll ask, and why</h2>
+    <div class="sub">Nothing here is busywork — each answer shapes how quickly and smoothly we can get you live.</div>
+    <div class="why">
+      <div class="whyrow">
+        <div class="t"><div class="ic"><svg viewBox="0 0 24 24"><path d="M9 7a3 3 0 1 0 0 6 3 3 0 0 0 0-6ZM3 20a6 6 0 0 1 12 0M17 7a3 3 0 0 1 0 6M15 20a6 6 0 0 1 6-6" stroke-linecap="round"/></svg></div><h3>Your team</h3></div>
+        <p>So we reach the right technical contacts from day one and plan around how your engineering team actually ships — rather than chasing the wrong people mid-rollout.</p>
+      </div>
+      <div class="whyrow">
+        <div class="t"><div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4" stroke-linecap="round"/></svg></div><h3>Timeline &amp; platforms</h3></div>
+        <p>Knowing your deadline and which surfaces are in scope — web, AMP, iOS, Android, CTV — lets us sequence the work sensibly and give you a realistic go-live plan instead of a guess.</p>
+      </div>
+      <div class="whyrow">
+        <div class="t"><div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="6" rx="1"/><rect x="3" y="10" width="18" height="4" rx="1"/><rect x="3" y="15" width="18" height="6" rx="1"/></svg></div><h3>Your ad stack</h3></div>
+        <p>Your ad server and demand connections (Prebid, AdX, direct, your SSPs and DSPs) tell us exactly where Permutive plugs in, so targeting and reporting work from the start.</p>
+      </div>
+      <div class="whyrow">
+        <div class="t"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6l-8-4Z"/><path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>Identity &amp; data</h3></div>
+        <p>The identifiers you can share let us recognise your audiences across browsers, devices and domains — and, if you route data, we make sure it lands in the right warehouse.</p>
+      </div>
+      <div class="whyrow">
+        <div class="t"><div class="ic"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4" stroke-linecap="round"/></svg></div><h3>Domains, apps &amp; CTV</h3></div>
+        <p>A clear list of every site and app is what we scope the integration against, so nothing is missed and each property is accounted for in the deployment.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="note"><strong>A note on your data.</strong> This is a static page — there's no server collecting your answers in the background. Everything you enter lives only inside the link you generate, which stays in your hands until you choose to send it to us. Please share that link only with people you trust, as anyone who opens it can see the responses.</div>
+
+  <div class="cta">
+    <a class="startbtn" href="Permutive_Deployment_Intake.html">Start the questionnaire<svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    <span class="mins">About 10 minutes · progress saves automatically</span>
+  </div>
+
+  <footer>Permutive · Technical deployment questionnaire</footer>
+</div>
+</body>
+</html>
