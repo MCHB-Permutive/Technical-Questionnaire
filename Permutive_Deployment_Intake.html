@@ -154,7 +154,7 @@
         <div class="row2"><input type="date" data-f="deadline"><input type="text" data-f="deadline_note" placeholder="Same across all platforms? Any detail…"></div></div>
       <div class="q"><label>Which platforms are in scope?</label>
         <div class="hint">Select all that apply — then drag the priority order below.</div>
-        <div class="pills" data-group="platforms" data-multi="1"><button class="pill" data-v="Web">Web</button><button class="pill" data-v="AMP">AMP</button><button class="pill" data-v="iOS">iOS</button><button class="pill" data-v="Android">Android</button><button class="pill" data-v="CTV">CTV</button></div></div>
+        <div class="pills" data-group="platforms" data-multi="1"><button class="pill" data-v="Web">Web</button><button class="pill" data-v="iOS">iOS</button><button class="pill" data-v="Android">Android</button><button class="pill" data-v="CTV">CTV</button></div></div>
       <div class="q" id="orderq"><label>Deployment priority order</label>
         <div class="hint">Use the arrows to rank which platforms go first.</div>
         <div class="miniorder" id="orderlist"></div></div>
@@ -165,6 +165,14 @@
       <div class="q"><label>Do you use staging / test / dev environments?</label>
         <div class="pills" data-group="staging" data-multi="0"><button class="pill" data-v="Yes">Yes</button><button class="pill" data-v="No">No</button></div>
         <textarea style="margin-top:10px" data-f="staging_note" placeholder="Briefly, how does a change move from dev to production?"></textarea></div>
+      <div class="q"><label>Can you share staging environments with us for testing?</label>
+        <div class="hint">Per platform - it lets us validate the integration before you go live.</div>
+        <div class="row2">
+          <div><div class="hint" style="margin-bottom:5px">Web</div><select data-f="staging_share_web"><option value="">Select…</option><option>Yes</option><option>No</option><option>Not sure</option></select></div>
+          <div><div class="hint" style="margin-bottom:5px">iOS</div><select data-f="staging_share_ios"><option value="">Select…</option><option>Yes</option><option>No</option><option>Not sure</option></select></div>
+          <div><div class="hint" style="margin-bottom:5px">Android</div><select data-f="staging_share_android"><option value="">Select…</option><option>Yes</option><option>No</option><option>Not sure</option></select></div>
+          <div><div class="hint" style="margin-bottom:5px">CTV</div><select data-f="staging_share_ctv"><option value="">Select…</option><option>Yes</option><option>No</option><option>Not sure</option></select></div>
+        </div></div>
     </section>
 
     <!-- STEP 3: AD STACK -->
@@ -172,7 +180,7 @@
       <div class="panel-head"><div class="ic"><svg fill="none" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="6" rx="1"/><rect x="3" y="10" width="18" height="4" rx="1"/><rect x="3" y="15" width="18" height="6" rx="1"/></svg></div>
         <div><h2>Ad serving &amp; monetisation</h2><div class="sub">Your ad server and demand connections</div></div></div>
       <div class="q"><label>Which ad server(s) do you use?</label>
-        <div class="pills" data-group="adservers" data-multi="1"><button class="pill" data-v="Google Ad Manager">Google Ad Manager</button><button class="pill" data-v="Xandr">Xandr</button><button class="pill" data-v="Equativ">Equativ</button><button class="pill" data-v="Other">Other</button></div>
+        <div class="pills" data-group="adservers" data-multi="1"><button class="pill" data-v="Google Ad Manager">Google Ad Manager</button><button class="pill" data-v="Microsoft Monetize (Xandr)">Microsoft Monetize (Xandr)</button><button class="pill" data-v="Equativ">Equativ</button><button class="pill" data-v="FreeWheel">FreeWheel</button><button class="pill" data-v="AdsWizz">AdsWizz</button><button class="pill" data-v="SmartX">SmartX</button><button class="pill" data-v="Other">Other</button></div>
         <textarea style="margin-top:10px" data-f="adserver_note" placeholder="If multiple, tell us why…"></textarea></div>
       <div class="q hidden" id="gdtq"><label>Do you have access to Google Data Transfer?</label>
         <div class="hint">Shown because you selected Google Ad Manager.</div>
@@ -181,7 +189,9 @@
         <div class="pills" data-group="connect" data-multi="1"><button class="pill" data-v="Prebid">Prebid</button><button class="pill" data-v="AdX">AdX</button><button class="pill" data-v="Direct">Direct</button></div>
         <input type="text" style="margin-top:10px" class="hidden" id="prebidver" data-f="prebid_version" placeholder="Prebid version, if known (e.g. 8.42)"></div>
       <div class="q"><label>Which SSPs or DSPs do you work with?</label>
-        <textarea data-f="ssps" placeholder="e.g. Xandr, Magnite (Rubicon), PubMatic, Index Exchange"></textarea></div>
+        <div class="hint">Add each one and flag how important it is for Permutive to support. e.g. Magnite, PubMatic, Index Exchange.</div>
+        <div class="rowlist" id="ssplist"></div>
+        <button class="addbtn" data-add="ssp"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>Add SSP / DSP</button></div>
     </section>
 
     <!-- STEP 4: IDENTITY -->
@@ -193,8 +203,11 @@
         <div class="hint">Add each identifier you can share (e.g. hashed email, logged-in user ID, subscriber ID).</div>
         <div class="rowlist" id="idlist"></div>
         <button class="addbtn" data-add="id"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>Add identifier</button></div>
-      <div class="q"><label>If you route data, which warehouse to?</label>
-        <select data-f="warehouse"><option value="">Select…</option><option>BigQuery</option><option>Amazon S3</option><option>Snowflake</option><option>Not routing</option><option>Other</option></select></div>
+      <div class="q"><label>Which data warehouse do you use internally?</label>
+        <select data-f="warehouse_internal"><option value="">Select…</option><option>BigQuery</option><option>Amazon S3</option><option>Snowflake</option><option>Redshift</option><option>Databricks</option><option>Other</option><option>None</option></select></div>
+      <div class="q"><label>If you purchase our log-level data transfer (Routing), would it be pushed to that same warehouse?</label>
+        <select data-f="routing_same_warehouse"><option value="">Select…</option><option>Yes - same warehouse</option><option>No - a different warehouse</option><option>Not sure / TBD</option><option>Not planning to purchase</option></select>
+        <input type="text" style="margin-top:10px" data-f="routing_warehouse_note" placeholder="If different, which warehouse?"></div>
     </section>
 
     <!-- STEP 5: PLATFORMS -->
@@ -202,11 +215,18 @@
       <div class="panel-head"><div class="ic"><svg fill="none" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4" stroke-linecap="round"/></svg></div>
         <div><h2>Domains, apps &amp; CTV</h2><div class="sub">Everywhere Permutive will be deployed</div></div></div>
       <div class="q"><label>Websites</label>
-        <div class="hint">List each domain and tick the surfaces it runs. FIA = Facebook Instant Articles.</div>
+        <div class="hint">List each domain Permutive will run on.</div>
         <div class="rowlist" id="domlist"></div>
         <button class="addbtn" data-add="dom"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>Add domain</button></div>
+      <div class="q"><label>What integration model does your site use?</label>
+        <div class="hint">Select all that apply.</div>
+        <div class="pills" data-group="integration" data-multi="1"><button class="pill" data-v="Single-page application (SPA)">Single-page application (SPA)</button><button class="pill" data-v="Server-side rendered (SSR)">Server-side rendered (SSR)</button><button class="pill" data-v="Traditional multi-page">Traditional multi-page</button><button class="pill" data-v="Other">Other</button></div></div>
+      <div class="q"><label>How would you prefer to deploy Permutive on web?</label>
+        <div class="hint">Deploying directly is preferable - a tag manager adds latency, which can impact scale.</div>
+        <div class="pills" data-group="deploy_method" data-multi="0"><button class="pill" data-v="Directly in the page (preferred)">Directly in the page (preferred)</button><button class="pill" data-v="Via a tag manager">Via a tag manager</button></div>
+        <input type="text" style="margin-top:10px" class="hidden" id="tmq" data-f="tagmanager_name" placeholder="Which tag manager? e.g. Google Tag Manager, Tealium"></div>
       <div class="q"><label>Mobile apps</label>
-        <div class="hint">Your iOS and Android apps, with minimum OS supported.</div>
+        <div class="hint">Your iOS and Android apps - minimum OS supported and how each app is built.</div>
         <div class="rowlist" id="applist"></div>
         <button class="addbtn" data-add="app"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>Add app</button></div>
       <div class="q"><label>Connected TV</label>
@@ -218,7 +238,7 @@
     <!-- REVIEW -->
     <section class="panel hidden" data-step="5">
       <div class="panel-head"><div class="ic"><svg fill="none" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <div><h2>Review &amp; send</h2><div class="sub">Check your answers, then copy your link or send it</div></div></div>
+        <div><h2>Review &amp; send</h2><div class="sub">Check your answers, then copy your link to share</div></div></div>
       <div class="q"><label>Anything else we should know?</label>
         <div class="hint">Any detail we haven't asked about — other tools, constraints, dependencies or questions.</div>
         <textarea data-f="notes" placeholder="Optional — add any extra context here"></textarea></div>
@@ -226,8 +246,6 @@
       <div id="review"></div>
       <div class="exp-row">
         <button class="btn primary" id="copy"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1" stroke-linecap="round" stroke-linejoin="round"/></svg>Copy shareable link</button>
-        <button class="btn" id="email"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Email link to Permutive</button>
-        <button class="btn" id="print"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H4v-6h16v6h-2M8 14h8v7H8z"/></svg>Print / PDF</button>
       </div>
     </section>
 
@@ -252,10 +270,7 @@
    ========================================================================= */
 
 /* ---- Config -------------------------------------------------------------
-   PERMUTIVE_CONTACT — where the review step's "Email link" button sends to.
-                       Change this per client so it reaches the right person.
-   STEPS            — the ordered wizard steps (labels shown in the side nav). */
-const PERMUTIVE_CONTACT = "mike.harrison-beaumont@permutive.com";
+   STEPS — the ordered wizard steps (labels shown in the side navigation).     */
 const STEPS = [
   {t:"Your team"}, {t:"Timeline & rollout"}, {t:"Ad stack"},
   {t:"Identity & data"}, {t:"Domains & apps"}, {t:"Review & send"}
@@ -267,10 +282,12 @@ const STEPS = [
      groups          — pill selections, keyed by their data-group name
      ids/doms/apps/ctv — the repeatable table rows on later steps
      order           — ranked deployment priority (a subset of platforms)     */
+const SCHEMA = 2; // bump when the saved-state shape changes; see migrate()
 const state = {
+  v: SCHEMA,
   fields:{},
-  groups:{platforms:[], release:[], staging:[], adservers:[], connect:[]},
-  ids:[], doms:[], apps:[], ctv:[], order:[]
+  groups:{platforms:[], release:[], staging:[], adservers:[], connect:[], integration:[], deploy_method:[]},
+  ids:[], ssps:[], doms:[], apps:[], ctv:[], order:[]
 };
 let cur = 0; // index of the step currently on screen
 
@@ -318,6 +335,8 @@ document.querySelectorAll('[data-group]').forEach(g=>{
         document.getElementById('gdtq').classList.toggle('hidden', !state.groups.adservers.includes('Google Ad Manager'));
       if(key === 'connect') // Prebid version only if they use Prebid
         document.getElementById('prebidver').classList.toggle('hidden', !state.groups.connect.includes('Prebid'));
+      if(key === 'deploy_method') // tag manager name only if using one
+        document.getElementById('tmq').classList.toggle('hidden', !state.groups.deploy_method.includes('Via a tag manager'));
       sync();
     });
   });
@@ -362,27 +381,36 @@ function renderOrder(){
      STOREMAP — kind -> the state key the rows are stored under
    rowEl builds one row; collect reads all rows of a list back into state.     */
 const TPL = {
-  id:  ()=>rowEl('id',  ['type|Identifier (e.g. hashed email)','example|Example value','domains|Domains it applies to']),
-  dom: ()=>rowEl('dom', ['domain|domain.com','surfaces|Web / AMP / FIA','lang|Language']),
-  app: ()=>rowEl('app', ['name|App name','os|iOS / Android','minos|Min OS version']),
+  id:  ()=>rowEl('id',  ['type|Identifier (e.g. hashed email)','example|Example value','purpose|Primarily used for','domains|Domains it applies to']),
+  ssp: ()=>rowEl('ssp', ['name|SSP / DSP name','priority|Priority for Permutive|Critical;High;Nice to have']),
+  dom: ()=>rowEl('dom', ['domain|domain.com','lang|Language']),
+  app: ()=>rowEl('app', ['name|App name','os|iOS / Android','minos|Min OS version','arch|Architecture|Native;React Native;Flutter;Hybrid (WebView);Other']),
   ctv: ()=>rowEl('ctv', ['name|Channel / app','platforms|Platforms (Roku, Fire TV…)','lang|Language'])
 };
-const LISTMAP  = {id:'idlist', dom:'domlist', app:'applist', ctv:'ctvlist'};
-const STOREMAP = {id:'ids',    dom:'doms',    app:'apps',    ctv:'ctv'};
+const LISTMAP  = {id:'idlist', ssp:'ssplist', dom:'domlist', app:'applist', ctv:'ctvlist'};
+const STOREMAP = {id:'ids',    ssp:'ssps',    dom:'doms',    app:'apps',    ctv:'ctv'};
 
-// Build one row: a text input per column, plus a delete button.
+// Build one row from a column spec. Each column is "key|placeholder" for a
+// text input, or "key|placeholder|opt1;opt2;opt3" for a dropdown.
 function rowEl(kind, cols){
   const wrap = document.createElement('div');
   wrap.className = 'repeat';
   wrap.style.gridTemplateColumns = 'repeat('+cols.length+',1fr) 34px';
   cols.forEach(c=>{
-    const [field, placeholder] = c.split('|');
-    const inp = document.createElement('input');
-    inp.type = 'text';
-    inp.placeholder = placeholder;
-    inp.dataset.col = field;
-    inp.addEventListener('input', ()=>collect(kind));
-    wrap.appendChild(inp);
+    const [field, placeholder, options] = c.split('|');
+    let el;
+    if(options){ // options present -> dropdown
+      el = document.createElement('select');
+      el.innerHTML = '<option value="">'+placeholder+'</option>' +
+        options.split(';').map(o=>'<option>'+o+'</option>').join('');
+    }else{
+      el = document.createElement('input');
+      el.type = 'text';
+      el.placeholder = placeholder;
+    }
+    el.dataset.col = field;
+    ['input','change'].forEach(ev=>el.addEventListener(ev, ()=>collect(kind)));
+    wrap.appendChild(el);
   });
   const del = document.createElement('button');
   del.className = 'del';
@@ -397,7 +425,7 @@ function collect(kind){
   const cont = document.getElementById(LISTMAP[kind]);
   state[STOREMAP[kind]] = [...cont.querySelectorAll('.repeat')].map(row=>{
     const obj = {};
-    row.querySelectorAll('input').forEach(i=>obj[i.dataset.col] = i.value);
+    row.querySelectorAll('input,select').forEach(i=>obj[i.dataset.col] = i.value);
     return obj;
   }).filter(obj => Object.values(obj).some(v => v && v.trim()));
   sync();
@@ -442,7 +470,8 @@ function sync(){
   else if(s.groups.platforms.length) out.push(chip(s.groups.platforms.join(', '), true));
   s.groups.adservers.forEach(a=>out.push(chip(a)));
   if(s.groups.connect.length)        out.push(chip(s.groups.connect.join(' + ')));
-  if(s.fields.warehouse && s.fields.warehouse!=='Not routing') out.push(chip('→ '+s.fields.warehouse));
+  if(s.ssps.length)                  out.push(chip(s.ssps.length+' SSP/DSP'+(s.ssps.length>1?'s':'')));
+  if(s.fields.warehouse_internal)    out.push(chip('DW: '+s.fields.warehouse_internal));
   if(s.ids.length)                   out.push(chip(s.ids.length+' identifier'+(s.ids.length>1?'s':'')));
   const properties = s.doms.length + s.apps.length + s.ctv.length;
   if(properties)                     out.push(chip(properties+' property'+(properties>1?'ies':'y')));
@@ -483,15 +512,35 @@ function updateHash(){
   }, 400);
 }
 
+/* ---- Schema versioning --------------------------------------------------
+   Links carry a version (state.v). migrate() upgrades a decoded older link to
+   the current shape so old links keep working as fields evolve. Only add or
+   transform here - never rename an existing key in place.                     */
+function migrate(s){
+  if(!s) return s;
+  const v = s.v || 1;
+  if(v < 2){
+    s.fields = s.fields || {};
+    // v1 had a single combined "warehouse" question -> becomes the internal one.
+    if(s.fields.warehouse != null && s.fields.warehouse_internal == null)
+      s.fields.warehouse_internal = s.fields.warehouse === 'Not routing' ? '' : s.fields.warehouse;
+    // v1 stored SSPs/DSPs as free text -> seed one row in the new list.
+    if(typeof s.fields.ssps === 'string' && s.fields.ssps.trim() && !Array.isArray(s.ssps))
+      s.ssps = [{name: s.fields.ssps, priority: ''}];
+  }
+  s.v = SCHEMA;
+  return s;
+}
+
 /* Rebuild the whole UI from a decoded state object — used when the page is
    opened from a shared or saved link. Restores field values, pill
    selections, the conditional questions, the priority ranker and every
    repeatable row, then triggers a sync().                                    */
 function hydrate(s){
   Object.assign(state.fields, s.fields||{});
-  ['platforms','release','staging','adservers','connect'].forEach(k=>{ state.groups[k] = (s.groups && s.groups[k]) || []; });
+  Object.keys(state.groups).forEach(k=>{ state.groups[k] = (s.groups && s.groups[k]) || []; });
   state.order = s.order || [];
-  ['ids','doms','apps','ctv'].forEach(k=>{ state[k] = Array.isArray(s[k]) ? s[k] : []; });
+  ['ids','ssps','doms','apps','ctv'].forEach(k=>{ state[k] = Array.isArray(s[k]) ? s[k] : []; });
 
   // Reflect saved values back into the DOM.
   document.querySelectorAll('[data-f]').forEach(el=>{ if(state.fields[el.dataset.f]!=null) el.value = state.fields[el.dataset.f]; });
@@ -501,17 +550,18 @@ function hydrate(s){
   });
   document.getElementById('gdtq').classList.toggle('hidden', !(state.groups.adservers||[]).includes('Google Ad Manager'));
   document.getElementById('prebidver').classList.toggle('hidden', !(state.groups.connect||[]).includes('Prebid'));
+  document.getElementById('tmq').classList.toggle('hidden', !(state.groups.deploy_method||[]).includes('Via a tag manager'));
   renderOrder();
 
   // Rebuild each repeatable list from its saved rows (or one empty row).
-  ['id','dom','app','ctv'].forEach(kind=>{
+  ['id','ssp','dom','app','ctv'].forEach(kind=>{
     const cont = document.getElementById(LISTMAP[kind]);
     cont.innerHTML = '';
     const rows = state[STOREMAP[kind]];
     if(rows.length){
       rows.forEach(obj=>{
         const row = TPL[kind]();
-        row.querySelectorAll('input').forEach(inp=>{ if(obj[inp.dataset.col]!=null) inp.value = obj[inp.dataset.col]; });
+        row.querySelectorAll('input,select').forEach(inp=>{ if(obj[inp.dataset.col]!=null) inp.value = obj[inp.dataset.col]; });
         cont.appendChild(row);
       });
     }else{
@@ -521,28 +571,32 @@ function hydrate(s){
   sync();
 }
 
-/* ---- Review + export ----------------------------------------------------
-   buildData flattens state into a labelled key -> value map used for both
-   the on-screen summary and the plain-text version. renderReview draws the
-   summary tables; plainText produces the text used in the email body.        */
+/* ---- Review ------------------------------------------------------------
+   buildData flattens state into a labelled key -> value map; renderReview
+   draws the on-screen summary tables shown on the final step.                 */
 function esc(x){ return (x||'').toString().replace(/[&<>]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
 function buildData(){
   const f = state.fields;
+  const stagingShare = [['Web','staging_share_web'],['iOS','staging_share_ios'],['Android','staging_share_android'],['CTV','staging_share_ctv']]
+    .filter(([,k])=>f[k]).map(([label,k])=>label+': '+f[k]).join(', ');
   return {
-    "Main contact":         [f.contact_name,f.contact_title,f.contact_email].filter(Boolean).join(', '),
-    "Others involved":      f.others,
-    "Deadline":             [f.deadline,f.deadline_note].filter(Boolean).join(' — '),
-    "Platforms in scope":   state.groups.platforms.join(', '),
-    "Priority order":       state.order.join(' → '),
-    "Technical teams":      f.teams,
-    "Release cycle":        state.groups.release.join(', '),
-    "Staging / dev":        [state.groups.staging.join(', '),f.staging_note].filter(Boolean).join(' — '),
-    "Ad server(s)":         [state.groups.adservers.join(', '),f.adserver_note].filter(Boolean).join(' — '),
-    "Google Data Transfer": f.gdt,
-    "SSP/DSP connection":   [state.groups.connect.join(', '),f.prebid_version?('Prebid '+f.prebid_version):''].filter(Boolean).join(', '),
-    "SSPs / DSPs":          f.ssps,
-    "Data warehouse":       f.warehouse,
-    "Additional notes":     f.notes
+    "Main contact":              [f.contact_name,f.contact_title,f.contact_email].filter(Boolean).join(', '),
+    "Others involved":           f.others,
+    "Deadline":                  [f.deadline,f.deadline_note].filter(Boolean).join(' — '),
+    "Platforms in scope":        state.groups.platforms.join(', '),
+    "Priority order":            state.order.join(' → '),
+    "Technical teams":           f.teams,
+    "Release cycle":             state.groups.release.join(', '),
+    "Staging / dev":             [state.groups.staging.join(', '),f.staging_note].filter(Boolean).join(' — '),
+    "Staging shared for testing":stagingShare,
+    "Ad server(s)":              [state.groups.adservers.join(', '),f.adserver_note].filter(Boolean).join(' — '),
+    "Google Data Transfer":      f.gdt,
+    "SSP/DSP connection":        [state.groups.connect.join(', '),f.prebid_version?('Prebid '+f.prebid_version):''].filter(Boolean).join(', '),
+    "Web integration model":     state.groups.integration.join(', '),
+    "Preferred web deployment":  [state.groups.deploy_method.join(', '),f.tagmanager_name?('Tag manager: '+f.tagmanager_name):''].filter(Boolean).join(' — '),
+    "Internal data warehouse":   f.warehouse_internal,
+    "Routed data warehouse":     [f.routing_same_warehouse,f.routing_warehouse_note].filter(Boolean).join(' — '),
+    "Additional notes":          f.notes
   };
 }
 function renderReview(){
@@ -558,32 +612,15 @@ function renderReview(){
     arr.forEach(r=>{ t += '<tr><td colspan="2">'+cols.map(c=>esc(r[c]||'—')).join(' · ')+'</td></tr>'; });
     return t + '</table></div>';
   };
-  h += tbl('Identifiers', state.ids,  ['type','example','domains']);
-  h += tbl('Domains',     state.doms, ['domain','surfaces','lang']);
-  h += tbl('Apps',        state.apps, ['name','os','minos']);
+  h += tbl('SSPs / DSPs', state.ssps, ['name','priority']);
+  h += tbl('Identifiers', state.ids,  ['type','example','purpose','domains']);
+  h += tbl('Domains',     state.doms, ['domain','lang']);
+  h += tbl('Apps',        state.apps, ['name','os','minos','arch']);
   h += tbl('CTV',         state.ctv,  ['name','platforms','lang']);
   document.getElementById('review').innerHTML = h;
 }
-function plainText(){
-  const d = buildData();
-  let t = 'PERMUTIVE — TECHNICAL DEPLOYMENT QUESTIONNAIRE\n\n';
-  for(const k in d){ if(d[k] && d[k].trim()) t += k+': '+d[k]+'\n'; }
-  const sec = (title, arr, cols)=>{
-    if(!arr.length) return;
-    t += '\n'+title.toUpperCase()+'\n';
-    arr.forEach(r=>t += ' - '+cols.map(c=>r[c]||'—').join(' | ')+'\n');
-  };
-  sec('Identifiers', state.ids,  ['type','example','domains']);
-  sec('Domains',     state.doms, ['domain','surfaces','lang']);
-  sec('Apps',        state.apps, ['name','os','minos']);
-  sec('CTV',         state.ctv,  ['name','platforms','lang']);
-  return t;
-}
-
-/* Review-step buttons.
-     Copy  — puts the shareable link (all answers encoded) on the clipboard
-     Print — the browser's print / save-as-PDF dialog
-     Email — opens the user's mail client with the link pre-filled            */
+/* Review-step button.
+     Copy — puts the shareable link (all answers encoded) on the clipboard.    */
 document.getElementById('copy').onclick = async ()=>{
   const url = shareURL();
   const btn = document.getElementById('copy');
@@ -595,24 +632,15 @@ document.getElementById('copy').onclick = async ()=>{
     window.prompt('Copy this link:', url); // clipboard API can be blocked on file://
   }
 };
-document.getElementById('print').onclick = ()=>window.print();
-document.getElementById('email').onclick = ()=>{
-  const body = encodeURIComponent(
-    'Here are our answers to the Permutive technical deployment questionnaire.\n\n' +
-    'Open the completed form here (it reopens with everything filled in):\n' + shareURL());
-  location.href = 'mailto:' + PERMUTIVE_CONTACT +
-    '?subject=' + encodeURIComponent('Technical Deployment Questionnaire — '+(state.fields.contact_name||'')) +
-    '&body=' + body;
-};
 
 /* ---- Init ---------------------------------------------------------------
    If the URL already carries saved state (#d=...), resume from it; otherwise
    start fresh with one empty row in each repeatable list. Then show step 1.  */
-const saved = location.hash.indexOf('#d=')===0 ? decodeState(location.hash.slice(3)) : null;
+const saved = location.hash.indexOf('#d=')===0 ? migrate(decodeState(location.hash.slice(3))) : null;
 if(saved){
   hydrate(saved);
 }else{
-  ['id','dom','app','ctv'].forEach(k=>document.getElementById(LISTMAP[k]).appendChild(TPL[k]()));
+  ['id','ssp','dom','app','ctv'].forEach(k=>document.getElementById(LISTMAP[k]).appendChild(TPL[k]()));
 }
 go(0);
 </script>
